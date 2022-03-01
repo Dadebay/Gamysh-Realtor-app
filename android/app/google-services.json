@@ -1,23 +1,24 @@
 {
   "project_info": {
     "project_number": "638900216782",
+    "firebase_url": "https://gamysh-8a004-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "gamysh-8a004",
     "storage_bucket": "gamysh-8a004.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:638900216782:android:f4280d38253ae80be1019f",
+        "mobilesdk_app_id": "1:638900216782:android:7f177363ac697360e1019f",
         "android_client_info": {
-          "package_name": "com.bilermennesil.gamysh"
+          "package_name": "com.bilermennesil.gamys"
         }
       },
       "oauth_client": [
         {
-          "client_id": "638900216782-9940qieshp9cnnc6pf5a12597g16u14u.apps.googleusercontent.com",
+          "client_id": "638900216782-tgaqr3ps70rb8iuqi4s1254tturkn3l1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.bilermennesil.gamysh",
+            "package_name": "com.bilermennesil.gamys",
             "certificate_hash": "bdc54734cb2d09e3faf4c8a7cf4ff56deefcb3ab"
           }
         },

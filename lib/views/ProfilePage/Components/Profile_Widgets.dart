@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:flutter_restart/flutter_restart.dart';
 // import 'package:flutter_restart/flutter_restart.dart';
 import 'package:gamys/constants/constants.dart';
 import 'package:gamys/constants/widgets.dart';
@@ -386,9 +387,11 @@ Future<dynamic> changeLanguage() {
           height: 20,
         ),
         ListTile(
-            onTap: () {
+            onTap: () async {
               Get.updateLocale(const Locale('en'));
               saveData("en");
+              final result = await FlutterRestart.restartApp();
+              print(result);
               Get.back();
             },
             leading: const CircleAvatar(
@@ -405,9 +408,11 @@ Future<dynamic> changeLanguage() {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: ListTile(
-              onTap: () {
+              onTap: () async {
                 Get.updateLocale(const Locale('ru'));
                 saveData("ru");
+                final result = await FlutterRestart.restartApp();
+                print(result);
                 Get.back();
               },
               leading: const CircleAvatar(

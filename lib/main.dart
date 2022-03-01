@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         channelDescription: channel.description,
         color: Colors.white,
         styleInformation: BigTextStyleInformation(''),
-        icon: '@mipmap/ic_launcher',
+        icon: '@mipmap/launcher_icon',
       ),
     ),
   );
@@ -98,7 +99,6 @@ class _MyAppRunState extends State<MyAppRun> {
     loadData().then((value) {
       languageCode = value ?? "ru";
     });
-
     FirebaseMessaging.instance.subscribeToTopic('Events');
     FirebaseMessaging.instance.getToken().then((value) {
       print("token");
@@ -116,7 +116,7 @@ class _MyAppRunState extends State<MyAppRun> {
             channelDescription: channel.description,
             styleInformation: BigTextStyleInformation(''),
             color: Colors.white,
-            icon: '@mipmap/ic_launcher',
+            icon: '@mipmap/launcher_icon',
           ),
         ),
       );

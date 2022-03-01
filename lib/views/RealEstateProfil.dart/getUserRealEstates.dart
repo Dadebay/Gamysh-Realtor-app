@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, avoid_bool_literals_in_conditional_expressions
+// ignore_for_file: file_names, avoid_bool_literals_in_conditional_expressions, invalid_use_of_protected_member
 
 import 'package:flutter/material.dart';
 import 'package:gamys/components/RealEstateCard2.dart';
