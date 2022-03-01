@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "638900216782",
+    "project_id": "gamysh-8a004",
+    "storage_bucket": "gamysh-8a004.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638900216782:android:f4280d38253ae80be1019f",
+        "android_client_info": {
+          "package_name": "com.bilermennesil.gamysh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "638900216782-9940qieshp9cnnc6pf5a12597g16u14u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bilermennesil.gamysh",
+            "certificate_hash": "bdc54734cb2d09e3faf4c8a7cf4ff56deefcb3ab"
+          }
+        },
+        {
+          "client_id": "638900216782-e2nc86rs2s3j0po2uhhq4g5a78lfiovn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6dSE_Uxx2y9ubepW62QwO6FV0lKpfJa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "638900216782-e2nc86rs2s3j0po2uhhq4g5a78lfiovn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
