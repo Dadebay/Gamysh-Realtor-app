@@ -40,7 +40,7 @@ class GetUserOtherRealEstates extends GetxController {
   }
 
   addPage() {
-    if ((pageNumberMine / 20) > page.value + 1) {
+    if ((pageNumberMine / 20) > page.value) {
       page.value += 1;
       fetchRealEstates(userID.value);
     } else {

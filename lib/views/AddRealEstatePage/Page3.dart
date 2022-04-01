@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, file_names
+// ignore_for_file: depend_on_referenced_packages, file_names, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,99 +19,29 @@ import 'MapPageSelectUserHouse.dart';
 
 // ignore: must_be_immutable
 class Page3 extends StatelessWidget {
-  final AuthController authController = Get.put(AuthController());
   final AddRealEstateController addRealEstateController = Get.put(AddRealEstateController());
-
-  final BottomNavBarController bottomNavBarController = Get.put(BottomNavBarController());
-  final GlobalKey<FormState> _form2Key = GlobalKey();
-  TextEditingController areaController = TextEditingController();
-  TextEditingController descriptionRuController = TextEditingController();
-  TextEditingController descriptionTmController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  FocusNode areaFocus = FocusNode();
-  FocusNode descriptionRuFocus = FocusNode();
-  FocusNode descriptionTmFocus = FocusNode();
-  FocusNode priceFocus = FocusNode();
   List<dynamic> animal = [];
+  TextEditingController areaController = TextEditingController();
+  FocusNode areaFocus = FocusNode();
+  final AuthController authController = Get.put(AuthController());
+  final BottomNavBarController bottomNavBarController = Get.put(BottomNavBarController());
+  TextEditingController descriptionRuController = TextEditingController();
+  FocusNode descriptionRuFocus = FocusNode();
+  TextEditingController descriptionTmController = TextEditingController();
+  FocusNode descriptionTmFocus = FocusNode();
+  TextEditingController priceController = TextEditingController();
+  FocusNode priceFocus = FocusNode();
+
   final List<TextEditingController> _controllers = [];
+  final GlobalKey<FormState> _form2Key = GlobalKey();
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          color: Colors.white,
-          width: Get.size.width,
-          padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
-          child: Text(
-            "addRealEstate".tr,
-            style: const TextStyle(color: Colors.black, fontFamily: robotoBold, fontSize: 18),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Form(
-              key: _form2Key,
-              child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  children: [
-                    textField(textInputLength: 5, littleText: "litteTextM2".tr, text: "area".tr, errorText: "errorArea", controller: areaController, type: TextInputType.number, maxline: 1),
-                    textField(textInputLength: 10, littleText: "TMT", text: "priсe".tr, errorText: "errorPrice", controller: priceController, type: TextInputType.number, maxline: 1),
-                    FutureBuilder<List<Specifications>>(
-                        future: Specifications().getSpecification(typeId: bottomNavBarController.typeID.value, categoryId: bottomNavBarController.categoryId.value),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return const SizedBox.shrink();
-                          } else if (snapshot.connectionState == ConnectionState.waiting) {
-                            // return SizedBox.shrink();
-                            return Center(child: spinKit());
-                          } else if (snapshot.data == null) {
-                            return const SizedBox.shrink();
-                          }
-                          counter = 0;
-
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              animal = snapshot.data[index].values as List<dynamic>;
-                              return snapshot.data[index].isMultiple ? multipleSelectField(snapshot, index) : onTapTextField(snapshot: snapshot, index: index);
-                            },
-                          );
-                        }),
-                    textField(textInputLength: 500, text: "descriptionTm".tr, errorText: "errorDescriptionRu", controller: descriptionTmController, type: TextInputType.text, maxline: 5),
-                    textField(textInputLength: 500, text: "descriptionRu".tr, errorText: "errorDescriptionRu", controller: descriptionRuController, type: TextInputType.text, maxline: 5),
-                    showOnMapButton(),
-                    agreeButton2()
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  int counter = 0;
-  Padding onTapTextField({
-    AsyncSnapshot snapshot,
-    int index,
-  }) {
-    if (counter < index) {
-      counter++;
-    }
+  Padding onTapTextField({AsyncSnapshot snapshot, int index}) {
+    addRealEstateController.id.value = -1;
     if (_controllers.length < snapshot.data.length) {
       _controllers.add(TextEditingController());
     }
-    // _controllers.add(new TextEditingController());
+    int b = 0;
+    int c = 0;
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 15),
         child: Stack(
@@ -140,8 +70,15 @@ class Page3 extends StatelessWidget {
                   : null,
               textInputAction: TextInputAction.next,
               onTap: () {
-                addRealEstateController.id.value = -1;
+                print(addRealEstateController.id.value);
                 final int a = snapshot.data[index].values.length;
+                print(a);
+                print(b);
+                if (b != a) {
+                  addRealEstateController.id.value = -1;
+                } else {
+                  addRealEstateController.id.value = c;
+                }
                 Get.defaultDialog(
                     radius: 4,
                     barrierDismissible: true,
@@ -181,6 +118,8 @@ class Page3 extends StatelessWidget {
                                 selectedTileColor: kPrimaryColor,
                                 value: indexx,
                                 onChanged: (val) {
+                                  b = a;
+                                  c = indexx;
                                   addRealEstateController.id.value = indexx;
                                   _controllers[index].text = name;
                                   bottomNavBarController.searchAndAddSpecList(
@@ -233,15 +172,7 @@ class Page3 extends StatelessWidget {
         ));
   }
 
-  Padding textField({
-    int textInputLength,
-    String littleText,
-    String text,
-    String errorText,
-    TextEditingController controller,
-    TextInputType type,
-    int maxline,
-  }) {
+  Padding textField({int textInputLength, String littleText, String text, String errorText, TextEditingController controller, TextInputType type, int maxline}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15),
       child: Stack(
@@ -459,7 +390,6 @@ class Page3 extends StatelessWidget {
   Column showOnMapButton() {
     return Column(
       children: [
-        // ignore: deprecated_member_use
         RaisedButton(
           onPressed: () {
             Get.to(() => MapPageSelectUserHouse());
@@ -516,6 +446,69 @@ class Page3 extends StatelessWidget {
             );
           }),
         )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          color: Colors.white,
+          width: Get.size.width,
+          padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
+          child: Text(
+            "addRealEstate".tr,
+            style: const TextStyle(color: Colors.black, fontFamily: robotoBold, fontSize: 18),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Form(
+              key: _form2Key,
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  children: [
+                    textField(textInputLength: 5, littleText: "litteTextM2".tr, text: "area".tr, errorText: "errorArea", controller: areaController, type: TextInputType.number, maxline: 1),
+                    textField(textInputLength: 10, littleText: "TMT", text: "priсe".tr, errorText: "errorPrice", controller: priceController, type: TextInputType.number, maxline: 1),
+                    FutureBuilder<List<Specifications>>(
+                        future: Specifications().getSpecification(typeId: bottomNavBarController.typeID.value, categoryId: bottomNavBarController.categoryId.value),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return const SizedBox.shrink();
+                          } else if (snapshot.connectionState == ConnectionState.waiting) {
+                            // return SizedBox.shrink();
+                            return Center(child: spinKit());
+                          } else if (snapshot.data == null) {
+                            return const SizedBox.shrink();
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              animal = snapshot.data[index].values as List<dynamic>;
+                              return snapshot.data[index].isMultiple ? multipleSelectField(snapshot, index) : onTapTextField(snapshot: snapshot, index: index);
+                            },
+                          );
+                        }),
+                    textField(textInputLength: 500, text: "descriptionTm".tr, errorText: "errorDescriptionRu", controller: descriptionTmController, type: TextInputType.text, maxline: 5),
+                    textField(textInputLength: 500, text: "descriptionRu".tr, errorText: "errorDescriptionRu", controller: descriptionRuController, type: TextInputType.text, maxline: 5),
+                    showOnMapButton(),
+                    agreeButton2()
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

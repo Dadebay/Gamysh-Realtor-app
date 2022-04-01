@@ -60,22 +60,33 @@ class LoginInPage extends StatelessWidget {
                 password: passwordContoller.text,
               )
                   .then((value) {
-                if (value == "home") {
-                  Get.to(() => BottomNavBar());
-                  authController.signInAnimation.value = false;
-                } else if (value == "smsgit") {
+                if (value == "smsgit") {
                   Get.to(() => SmsAuth(
                         whichPage: 0,
                         phoneNumber: phoneController.text,
                       ));
-
-                  authController.signInAnimation.value = false;
-                } else {
-                  authController.signInAnimation.value = false;
+                } else if (value == 400 || value == 405) {
                   phoneController.clear();
                   passwordContoller.clear();
                   _form1Key.currentState.validate();
+                  Vibration.vibrate();
+
+                  showSnackBar("errorSnapshot", "errorLogin400", Colors.red);
+                } else if (value == 500) {
+                  Vibration.vibrate();
+
+                  showSnackBar("errorSnapshot", "errorLogin500", Colors.red);
+                } else if (value == 409) {
+                  phoneController.clear();
+                  _form1Key.currentState.validate();
+
+                  Vibration.vibrate();
+
+                  showSnackBar("errorSnapshot", "errorLogin409", Colors.red);
+                } else if (value == 200) {
+                  Get.to(() => BottomNavBar());
                 }
+                authController.signInAnimation.value = false;
               });
             } else {
               phoneController.clear();

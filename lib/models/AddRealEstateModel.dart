@@ -132,6 +132,7 @@ class Specifications extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
+    print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"];
       for (final Map product in responseJson) {

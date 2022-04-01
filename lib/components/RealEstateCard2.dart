@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 // import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:gamys/constants/constants.dart';
 import 'package:gamys/constants/widgets.dart';
@@ -29,7 +30,7 @@ List<String> buttonName = [
   'share'.tr,
 ];
 call(String phoneNumber) async {
-  // await FlutterPhoneDirectCaller.callNumber("+993$phoneNumber");
+  await FlutterPhoneDirectCaller.callNumber("+993$phoneNumber");
 }
 
 bool liked = false;
@@ -59,12 +60,20 @@ class RealEstateCard2 extends StatefulWidget {
 
 class _RealEstateCard2State extends State<RealEstateCard2> {
   final UpdateReaLEstateController updateReaLEstateController = Get.put(UpdateReaLEstateController());
+  String _price = "";
+  changePrice() {
+    final String price = widget.price;
+    final int a = int.parse(price);
+    final oCcy = NumberFormat('###,000', 'fr');
+    _price = oCcy.format(a);
+  }
 
   @override
   void initState() {
     super.initState();
     liked = widget.likedValue;
     selectedIndex = 0;
+    changePrice();
   }
 
   addFavorite() async {
@@ -160,7 +169,7 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
                                         Get.to(() => RealEstateProfil(
                                               id: widget.id,
                                               name: widget.name,
-                                              price: widget.price,
+                                              price: _price,
                                             ));
                                         if (historyView.isEmpty) {
                                           historyView.add(widget.id);
@@ -178,8 +187,7 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
                                     child: ClipRRect(
                                       borderRadius: const BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
                                       child: CachedNetworkImage(
-                                        colorBlendMode: BlendMode.difference,
-                                        imageUrl: "$serverImage/${widget.images[selectedIndex]['destination']}-big.webp",
+                                        imageUrl: "$serverImage/${widget.images[selectedIndex]['destination']}-large.webp",
                                         imageBuilder: (context, imageProvider) => Container(
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
@@ -202,7 +210,7 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
                                                 Get.to(() => RealEstateProfil(
                                                       id: widget.id,
                                                       name: widget.name,
-                                                      price: widget.price,
+                                                      price: _price,
                                                     ));
                                                 if (historyView.isEmpty) {
                                                   historyView.add(widget.id);
@@ -341,7 +349,6 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
                   ),
                 ],
               )),
-
           if (widget.vip == true)
             Positioned(
                 top: 15,
@@ -353,7 +360,6 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
                 ))
           else
             const SizedBox.shrink(),
-
           if (widget.vip == true)
             Positioned(
                 top: 10,
@@ -367,17 +373,6 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
                 ))
           else
             const SizedBox.shrink(),
-          // widget.vip == true
-          //     ? Positioned(
-          //         bottom: 0,
-          //         child: Container(
-          //             width: Get.size.width,
-          //             color: Color(0xffffac33),
-          //             // color: Color(0xffffcb7f),
-          //             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-          //             height: 30,
-          //             child: Text("VIP", style: TextStyle(color: Colors.white, fontFamily: robotoMedium))))
-          //     : SizedBox.shrink(),
         ],
       ),
     ));
@@ -400,7 +395,7 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
             Get.to(() => RealEstateProfil(
                   id: widget.id,
                   name: widget.name,
-                  price: widget.price,
+                  price: _price,
                 ));
             if (historyView.isEmpty) {
               historyView.add(widget.id);
@@ -466,10 +461,6 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
   }
 
   GestureDetector namePart() {
-    final String price = widget.price;
-    final int a = int.parse(price);
-    final oCcy = NumberFormat('###,000', 'fr');
-
     return GestureDetector(
       onTap: () {
         realEstatesController.changeIndex(0);
@@ -483,7 +474,7 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
           Get.to(() => RealEstateProfil(
                 id: widget.id,
                 name: widget.name,
-                price: widget.price,
+                price: _price,
               ));
           if (historyView.isEmpty) {
             historyView.add(widget.id);
@@ -511,7 +502,7 @@ class _RealEstateCard2State extends State<RealEstateCard2> {
                   child: RichText(
                     text: TextSpan(children: <TextSpan>[
                       TextSpan(
-                          text: oCcy.format(a),
+                          text: _price,
                           style: TextStyle(fontFamily: widget.vip == true ? robotoBold : robotoMedium, letterSpacing: 1.0, fontSize: 24, overflow: TextOverflow.ellipsis, color: Colors.black)),
                       TextSpan(text: "  TMT", style: TextStyle(fontFamily: widget.vip == true ? robotoBold : robotoMedium, fontSize: 16, overflow: TextOverflow.ellipsis, color: Colors.black))
                     ]),

@@ -27,9 +27,13 @@ class FilterModel extends ChangeNotifier {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
     );
+    print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"][0]["count"];
       filterController.realEstateCount.value = double.parse(responseJson);
+      filterController.buttomButtonBool.value = false;
+      print(filterController.buttomButtonBool.value);
+
       return responseJson;
     } else {
       return null;
@@ -54,7 +58,11 @@ class FilterModel extends ChangeNotifier {
         for (final Map product in responseJson) {
           names.add(Specifications.fromJson(product));
         }
-
+        if (names.length >= 4 && filterController.showAllFiltersSnapshot.value == false) {
+          filterController.showAllFilters.value = true;
+        } else {
+          filterController.showAllFilters.value = false;
+        }
         return names;
       } else {
         return null;

@@ -88,7 +88,7 @@ class _FilteredRealEstatesState extends State<FilteredRealEstates> {
             Get.to(() => MapPage(parametrsMine: {
                   "category_id": "${widget.categoryId}",
                   "type_id": json.encode(widget.typeId),
-                  "owner_id": "${widget.realtorID}",
+                  "owner_id": filterController.realtorID.value == 3 ? "" : "${widget.realtorID}",
                   "price": widget.price,
                   "area": widget.area,
                   "location_id": "${widget.locationId}",

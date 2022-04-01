@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'package:countup/countup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gamys/components/emptyPage.dart';
 import 'package:gamys/constants/constants.dart';
 import 'package:gamys/constants/widgets.dart';
@@ -14,6 +16,7 @@ import 'package:gamys/models/AddRealEstateModel.dart';
 import 'package:gamys/models/FilterModel.dart';
 import 'package:gamys/models/GetLocation.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'FilteredRealEstates.dart';
 
@@ -40,11 +43,12 @@ class _FilterPagesState extends State<FilterPages> {
     filterController.specListMine.clear();
     filterController.typeIdListaArray.clear();
     filterController.typeIdList.clear();
-    filterController.realtorID.value = 2;
+    filterController.realtorID.value = 3;
     priceTextEditingControllerMax.clear();
     priceTextEditingControllerMin.clear();
     areaTextEditingControllerMin.clear();
     areaTextEditingControllerMax.clear();
+    filterController.showAllFiltersSnapshot.value == false;
     getRealEstateCount();
   }
 
@@ -55,135 +59,140 @@ class _FilterPagesState extends State<FilterPages> {
           Widget1(),
           dividerr(),
           Widget2(),
-          Widget4(),
-          twoTextEditingField(
-            name: "price".tr,
-            name2: "TMT",
-            hintText1: "dan1".tr,
-            hintText2: "dan2".tr,
-            controller1: priceTextEditingControllerMin,
-            controller2: priceTextEditingControllerMax,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 25, bottom: 25),
-            child: twoTextEditingField(
-              name: "area".tr,
-              name2: "litteTextM2".tr,
-              hintText1: "dan1".tr,
-              hintText2: "dan2".tr,
-              controller1: areaTextEditingControllerMin,
-              controller2: areaTextEditingControllerMax,
-            ),
-          ),
           Widget3(),
+          Widget4(),
           filterController.tabbarIndex.value == 1
               ? SizedBox(
                   height: 30,
                 )
               : SizedBox.shrink(),
           Spesifications(),
+          filterController.showAllFilters.value
+              ? SizedBox.shrink()
+              : twoTextEditingField(
+                  name: "price".tr,
+                  name2: "TMT",
+                  hintText1: "dan1".tr,
+                  hintText2: "dan2".tr,
+                  controller1: priceTextEditingControllerMin,
+                  controller2: priceTextEditingControllerMax,
+                ),
+          filterController.showAllFilters.value
+              ? SizedBox.shrink()
+              : Padding(
+                  padding: EdgeInsets.only(top: 25, bottom: filterController.showAllFiltersSnapshot.value ? 20 : 120),
+                  child: twoTextEditingField(
+                    name: "area".tr,
+                    name2: "litteTextM2".tr,
+                    hintText1: "dan1".tr,
+                    hintText2: "dan2".tr,
+                    controller1: areaTextEditingControllerMin,
+                    controller2: areaTextEditingControllerMax,
+                  ),
+                ),
+          filterController.showAllFilters.value ? showAllFiltersButton() : SizedBox.shrink(),
+          filterController.showAllFiltersSnapshot.value ? hideallFiltersButton() : SizedBox.shrink(),
         ],
       ),
     );
   }
 
-  Padding Spesifications() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 120),
-      child: FutureBuilder<List<Specifications>>(
-          future: FilterModel().getSpecificationList(categoryId: bottomNavBarController.categoryId.value, parametrs: {
-            "type_id": "${filterController.typeIdListaArray}",
-          }),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 25),
-                child: spinKit(),
-              ));
-            } else if (snapshot.hasError) {
-              return const SizedBox.shrink();
-            } else if (snapshot.data == null) {
-              return const SizedBox.shrink();
-            }
-            if (snapshot.data.length > 4) {
-              filterController.showAllFilters.value = true;
-            } else {
-              filterController.showAllFilters.value = false;
-            }
-            return Obx(() {
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: filterController.showAllFilters.value ? 4 : snapshot.data.length + 1,
-                itemBuilder: (BuildContext context, int indexx) {
-                  if (indexx < snapshot.data.length) {
-                    Future.delayed(const Duration(milliseconds: 1), () async {
-                      filterController.addChoiceChipList(snapshot, indexx);
-                    });
-                  }
-                  if (indexx == 3 && filterController.showAllFilters.value == true) {
-                    return RaisedButton(
-                      padding: EdgeInsets.only(top: 20),
-                      onPressed: () {
-                        filterController.showAllFilters.value = false;
-                      },
-                      highlightColor: Colors.white,
-                      highlightElevation: 0,
-                      hoverColor: Colors.white,
-                      color: Colors.white,
-                      elevation: 0,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "moreSpec".tr,
-                            style: const TextStyle(color: kPrimaryColor, fontSize: 18, fontFamily: robotoMedium),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(IconlyLight.arrowDownCircle, color: kPrimaryColor, size: 24),
-                          )
-                        ],
-                      ),
-                    );
-                  } else if (indexx == snapshot.data.length && filterController.showAllFilters.value == false && snapshot.data.length > 4) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      child: RaisedButton(
-                        onPressed: () {
-                          filterController.showAllFilters.value = true;
-                        },
-                        highlightColor: Colors.white,
-                        highlightElevation: 0,
-                        hoverColor: Colors.white,
-                        color: Colors.white,
-                        elevation: 0,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "moreSpecHide".tr,
-                              style: const TextStyle(color: kPrimaryColor, fontSize: 18, fontFamily: robotoMedium),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(IconlyLight.arrowUpCircle, color: kPrimaryColor, size: 24),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  if (indexx < snapshot.data.length) {
-                    return specCard(snapshot, indexx);
-                  }
-                  return const SizedBox.shrink();
-                },
-              );
-            });
-          }),
+  showAllFiltersButton() {
+    return Container(
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 80),
+      alignment: Alignment.center,
+      child: RaisedButton(
+        padding: EdgeInsets.only(top: 20),
+        onPressed: () {
+          filterController.showAllFilters.value = false;
+          filterController.showAllFiltersSnapshot.value = true;
+        },
+        highlightColor: Colors.white,
+        highlightElevation: 0,
+        hoverColor: Colors.white,
+        color: Colors.white,
+        elevation: 0,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "moreSpec".tr,
+              style: const TextStyle(color: kPrimaryColor, fontSize: 18, fontFamily: robotoMedium),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(IconlyLight.arrowDownCircle, color: kPrimaryColor, size: 24),
+            )
+          ],
+        ),
+      ),
     );
+  }
+
+  hideallFiltersButton() {
+    return Container(
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 80),
+      alignment: Alignment.center,
+      child: RaisedButton(
+        onPressed: () {
+          filterController.showAllFilters.value = true;
+          filterController.showAllFiltersSnapshot.value = false;
+        },
+        highlightColor: Colors.white,
+        highlightElevation: 0,
+        hoverColor: Colors.white,
+        color: Colors.white,
+        elevation: 0,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "moreSpecHide".tr,
+              style: const TextStyle(color: kPrimaryColor, fontSize: 18, fontFamily: robotoMedium),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(IconlyLight.arrowUpCircle, color: kPrimaryColor, size: 24),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget Spesifications() {
+    return FutureBuilder<List<Specifications>>(
+        future: FilterModel().getSpecificationList(categoryId: bottomNavBarController.categoryId.value, parametrs: {
+          "type_id": "${filterController.typeIdListaArray}",
+        }),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 25),
+              child: spinKit(),
+            ));
+          } else if (snapshot.hasError) {
+            return const SizedBox.shrink();
+          } else if (snapshot.data == null) {
+            return const SizedBox.shrink();
+          }
+          return Obx(() {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: filterController.showAllFilters.value ? 3 : snapshot.data.length,
+              itemBuilder: (BuildContext context, int indexx) {
+                if (indexx < snapshot.data.length) {
+                  Future.delayed(const Duration(milliseconds: 1), () async {
+                    filterController.addChoiceChipList(snapshot, indexx);
+                  });
+                }
+                return specCard(snapshot, indexx);
+              },
+            );
+          });
+        });
   }
 
   Wrap specCard(AsyncSnapshot<List<Specifications>> snapshot, int indexx) {
@@ -408,11 +417,10 @@ class _FilterPagesState extends State<FilterPages> {
           onChanged: (bool value) {
             if (value == true) {
               filterController.realtorID.value = 1;
-              getRealEstateCount();
             } else {
               filterController.realtorID.value = 2;
-              getRealEstateCount();
             }
+            getRealEstateCount();
           },
           contentPadding: EdgeInsets.zero,
           checkColor: Colors.white,
@@ -590,6 +598,14 @@ class _FilterPagesState extends State<FilterPages> {
               }
             }
           }
+          Future.delayed(Duration(milliseconds: 0), () {
+            if (filterController.typeIdListaArray.isEmpty && filterController.tabbarIndex.value == 0) {
+              filterController.typeIdList[0]["value"] = true;
+              filterController.typeIdListaArray.add(snapshot.data[0].mainTypes[0].subTypes[0].id);
+              filterController.specListMine.clear();
+              getRealEstateCount();
+            }
+          });
           return filterController.tabbarIndex.value == 0
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -608,6 +624,8 @@ class _FilterPagesState extends State<FilterPages> {
                           itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
                               onTap: () {
+                                filterController.showAllFiltersSnapshot.value = false;
+                                filterController.showAllFilters.value = false;
                                 filterController.updateTypeIdList(snapshot.data[0].mainTypes[0].subTypes[index].id);
                                 if (filterController.typeIdListaArray.isEmpty) {
                                   filterController.typeIdListaArray.add(snapshot.data[0].mainTypes[0].subTypes[index].id);
@@ -718,8 +736,20 @@ class _FilterPagesState extends State<FilterPages> {
   }
 
   Padding twoTextEditingField({String name, String hintText1, String hintText2, String name2, TextEditingController controller1, TextEditingController controller2}) {
+    String formNum(String s) {
+      return NumberFormat.decimalPattern().format(
+        int.parse(s),
+      );
+    }
+
+    String formNum2(String s) {
+      return NumberFormat.decimalPattern().format(
+        int.parse(s),
+      );
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -736,19 +766,35 @@ class _FilterPagesState extends State<FilterPages> {
                   controller: controller1,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.number,
-                  onChanged: (String value) {
+                  onChanged: (string) {
+                    if (name2 == "TMT") {
+                      string = '${formNum(
+                        string.replaceAll('a', ''),
+                      )}';
+                      controller1.value = TextEditingValue(
+                        text: string,
+                        selection: TextSelection.collapsed(
+                          offset: string.length,
+                        ),
+                      );
+                    }
                     getRealEstateCount();
                   },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(name2 == "TMT" ? 9 : 6),
+                  ],
+                  scrollPadding: EdgeInsets.zero,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
                     isDense: true,
                     prefixIcon: Text("$hintText1 ", style: const TextStyle(fontFamily: robotoRegular, fontSize: 16, color: Colors.black)),
                     prefixIconConstraints: const BoxConstraints(
-                      maxWidth: 50,
+                      maxWidth: 40,
                     ),
                     suffixIcon: Text(name2, style: const TextStyle(fontFamily: robotoRegular, fontSize: 16, color: Colors.black)),
                     suffixIconConstraints: const BoxConstraints(
-                      maxWidth: 50,
+                      maxWidth: 40,
                     ),
                     hintStyle: const TextStyle(fontFamily: robotoRegular, fontSize: 18, color: Colors.black),
                     focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: kPrimaryColor)),
@@ -763,20 +809,36 @@ class _FilterPagesState extends State<FilterPages> {
                   cursorColor: kPrimaryColor,
                   controller: controller2,
                   textInputAction: TextInputAction.next,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(name2 == "TMT" ? 9 : 6),
+                  ],
                   keyboardType: TextInputType.number,
-                  onChanged: (String value) {
+                  onChanged: (string) {
+                    if (name2 == "TMT") {
+                      string = '${formNum2(
+                        string.replaceAll('a', ''),
+                      )}';
+                      controller2.value = TextEditingValue(
+                        text: string,
+                        selection: TextSelection.collapsed(
+                          offset: string.length,
+                        ),
+                      );
+                    }
                     getRealEstateCount();
                   },
+                  scrollPadding: EdgeInsets.zero,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
                     prefixIcon: Text("$hintText2 ", style: const TextStyle(fontFamily: robotoRegular, fontSize: 16, color: Colors.black)),
                     prefixIconConstraints: const BoxConstraints(
-                      maxWidth: 50,
+                      maxWidth: 40,
                     ),
                     isDense: true,
                     suffixIcon: Text(name2, style: const TextStyle(fontFamily: robotoRegular, fontSize: 16, color: Colors.black)),
                     suffixIconConstraints: const BoxConstraints(
-                      maxWidth: 50,
+                      maxWidth: 40,
                     ),
                     hintStyle: const TextStyle(fontFamily: robotoRegular, fontSize: 18, color: Colors.black),
                     focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: kPrimaryColor)),
@@ -815,11 +877,14 @@ class _FilterPagesState extends State<FilterPages> {
   }
 
   getRealEstateCount() {
+    filterController.buttomButtonBool.value = true;
+    print(filterController.realtorID.value);
+
     FilterModel().getSpecRealEstatesCount(parametrs: {
       "main_type_id": "${filterController.tabbarIndex.value + 1}",
       "category_id": "${bottomNavBarController.categoryId.value}",
       "type_id": json.encode(filterController.typeIdListaArray),
-      "owner_id": "${filterController.realtorID.value}",
+      "owner_id": filterController.realtorID.value == 3 ? "" : "${filterController.realtorID.value}",
       "price": json.encode({"min": priceTextEditingControllerMin.text, "max": priceTextEditingControllerMax.text}),
       "area": json.encode({"min": areaTextEditingControllerMin.text, "max": areaTextEditingControllerMax.text}),
       "location_id": "${filterController.locationId.value}",
@@ -868,13 +933,22 @@ class _FilterPagesState extends State<FilterPages> {
             children: [
               if (Get.locale.languageCode == "en")
                 Obx(() {
-                  return Countup(
-                    begin: 0,
-                    end: filterController.realEstateCount.value,
-                    duration: const Duration(milliseconds: 500),
-                    separator: ',',
-                    style: const TextStyle(color: Colors.white, fontFamily: robotoMedium, fontSize: 18),
-                  );
+                  return filterController.buttomButtonBool.value
+                      ? Container(
+                          height: 23,
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          child: SpinKitWave(
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        )
+                      : Countup(
+                          begin: 0,
+                          end: filterController.realEstateCount.value,
+                          duration: const Duration(milliseconds: 500),
+                          separator: ',',
+                          style: const TextStyle(color: Colors.white, fontFamily: robotoMedium, fontSize: 18),
+                        );
                 })
               else
                 const SizedBox.shrink(),
@@ -884,13 +958,22 @@ class _FilterPagesState extends State<FilterPages> {
               ),
               if (Get.locale.languageCode == "ru")
                 Obx(() {
-                  return Countup(
-                    begin: 0,
-                    end: filterController.realEstateCount.value,
-                    duration: const Duration(milliseconds: 500),
-                    separator: ',',
-                    style: const TextStyle(color: Colors.white, fontFamily: robotoMedium, fontSize: 18),
-                  );
+                  return filterController.buttomButtonBool.value
+                      ? Container(
+                          height: 23,
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          child: SpinKitWave(
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        )
+                      : Countup(
+                          begin: 0,
+                          end: filterController.realEstateCount.value,
+                          duration: const Duration(milliseconds: 500),
+                          separator: ',',
+                          style: const TextStyle(color: Colors.white, fontFamily: robotoMedium, fontSize: 18),
+                        );
                 })
               else
                 const SizedBox.shrink(),

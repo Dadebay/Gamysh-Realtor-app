@@ -80,9 +80,24 @@ class SignInPage extends StatelessWidget {
                     email: emailController.text,
                     realtor: authController.realtor.value == false ? 1 : 2)
                 .then((value) {
-              if (value == "409" || value == false) {
+              if (value == 400 || value == 405) {
+                phoneController.clear();
+                passwordController.clear();
+                _form1Key.currentState.validate();
+                Vibration.vibrate();
+
+                showSnackBar("errorSnapshot", "errorLogin400", Colors.red);
+              } else if (value == 500) {
+                Vibration.vibrate();
+
+                showSnackBar("errorSnapshot", "errorLogin500", Colors.red);
+              } else if (value == 409) {
+                phoneController.clear();
                 userIsActive();
-              } else if (value == true) {
+
+                _form1Key.currentState.validate();
+                Vibration.vibrate();
+              } else if (value == 200) {
                 Get.to(() => SmsAuth(
                       whichPage: 0,
                       phoneNumber: phoneController.text,
@@ -95,14 +110,8 @@ class SignInPage extends StatelessWidget {
                   phoneController.clear();
                   passwordController.clear();
                 });
-              } else {
-                authController.signInAnimation.value = false;
-                nameController.clear();
-                emailController.clear();
-                phoneController.clear();
-                passwordController.clear();
-                _form1Key.currentState.validate();
               }
+              authController.signInAnimation.value = false;
             });
           } else {
             Vibration.vibrate();

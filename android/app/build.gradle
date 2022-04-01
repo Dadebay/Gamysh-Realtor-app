@@ -8,7 +8,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -20,14 +20,12 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-
+apply plugin: 'com.google.gms.google-services'
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 31
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -41,21 +39,19 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-lintOptions {
-    disable 'InvalidPackage'
-}
+
     defaultConfig {
-        applicationId "com.bilermennesil.gamys"
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.bilermennesil.gamysh"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 11
+        versionName "1.1.1"
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
     }
@@ -66,7 +62,7 @@ flutter {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation 'com.google.firebase:firebase-analytics'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

@@ -7,7 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_map/flutter_map.dart';
-// import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gamys/components/emptyPage.dart';
 import 'package:gamys/components/errorConnection.dart';
@@ -95,66 +95,7 @@ class RealEstateProfil extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          elevation: 2,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.share, color: kPrimaryColor),
-              onPressed: () {
-                if (realEstatesController.imageUrl.value == "") {
-                  showSnackBar("noImage".tr, "error".tr, kPrimaryColor);
-                } else {
-                  Share.share(realEstatesController.imageUrl.value, subject: 'Gamyş programmasy');
-                }
-              },
-            ),
-            IconButton(
-              icon: Obx(() {
-                return Icon(
-                  realEstatesController.favButton.value ? IconlyBold.heart : IconlyLight.heart,
-                  color: realEstatesController.favButton.value ? Colors.red : kPrimaryColor,
-                );
-              }),
-              onPressed: () {
-                addFavorite();
-              },
-            ),
-            const SizedBox(
-              width: 10,
-            )
-          ],
-          titleSpacing: 0.0,
-          title: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: kPrimaryColor),
-                  onPressed: () {
-                    Get.back();
-                  },
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(children: <TextSpan>[
-                        TextSpan(text: price ?? "0", style: const TextStyle(fontFamily: robotoMedium, fontSize: 26, color: Colors.black)),
-                        const TextSpan(text: "  TMT", style: TextStyle(fontFamily: robotoMedium, fontSize: 16, color: Colors.black))
-                      ]),
-                    ),
-                    Text(name ?? "Gamys", overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black, fontSize: 14, fontFamily: robotoMedium)),
-                  ],
-                ),
-              ),
-            ],
-          )),
+      appBar: appBar(),
       body: FutureBuilder<RealEstateProfileModel>(
           future: RealEstateProfileModel().getRealEstatesById(id),
           builder: (context, snapshot) {
@@ -186,9 +127,7 @@ class RealEstateProfil extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       imagePart(snapshot),
-                      nameCard(
-                        snapshot.data,
-                      ),
+                      nameCard(snapshot.data, price),
                       userDetail(snapshot.data),
                       mapCard(snapshot.data.position[0]["lat"], snapshot.data.position[0]["lng"], snapshot.data.name),
                       description(snapshot.data),
@@ -209,9 +148,70 @@ class RealEstateProfil extends StatelessWidget {
     );
   }
 
-  Card nameCard(
-    RealEstateProfileModel product,
-  ) {
+  AppBar appBar() {
+    return AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 2,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share, color: kPrimaryColor),
+            onPressed: () {
+              if (realEstatesController.imageUrl.value == "") {
+                showSnackBar("noImage".tr, "error".tr, kPrimaryColor);
+              } else {
+                Share.share(realEstatesController.imageUrl.value, subject: 'Gamyş programmasy');
+              }
+            },
+          ),
+          IconButton(
+            icon: Obx(() {
+              return Icon(
+                realEstatesController.favButton.value ? IconlyBold.heart : IconlyLight.heart,
+                color: realEstatesController.favButton.value ? Colors.red : kPrimaryColor,
+              );
+            }),
+            onPressed: () {
+              addFavorite();
+            },
+          ),
+          const SizedBox(
+            width: 10,
+          )
+        ],
+        titleSpacing: 0.0,
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: kPrimaryColor),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(text: price ?? "0", style: const TextStyle(fontFamily: robotoMedium, fontSize: 26, color: Colors.black)),
+                      const TextSpan(text: "  TMT", style: TextStyle(fontFamily: robotoMedium, fontSize: 16, color: Colors.black))
+                    ]),
+                  ),
+                  Text(name ?? "Gamys", overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black, fontSize: 14, fontFamily: robotoMedium)),
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Card nameCard(RealEstateProfileModel product, String _price) {
     return Card(
       elevation: 1,
       margin: const EdgeInsets.fromLTRB(10, 30, 10, 10),
@@ -223,7 +223,7 @@ class RealEstateProfil extends StatelessWidget {
           children: [
             RichText(
               text: TextSpan(children: <TextSpan>[
-                TextSpan(text: product.price, style: const TextStyle(fontFamily: robotoMedium, fontSize: 26, color: Colors.black)),
+                TextSpan(text: _price, style: const TextStyle(fontFamily: robotoMedium, fontSize: 26, color: Colors.black)),
                 const TextSpan(text: "  TMT", style: TextStyle(fontFamily: robotoMedium, fontSize: 16, color: Colors.black))
               ]),
             ),
@@ -312,7 +312,7 @@ class RealEstateProfil extends StatelessWidget {
                       decoration: const BoxDecoration(borderRadius: borderRadius10),
                       child: CachedNetworkImage(
                         colorBlendMode: BlendMode.difference,
-                        imageUrl: "$serverImage/${snapshot.data.images[index]['destination']}-mini.webp",
+                        imageUrl: "$serverImage/${snapshot.data.images[index]['destination']}-big.webp",
                         imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
                             borderRadius: borderRadius10,
@@ -484,8 +484,8 @@ class RealEstateProfil extends StatelessWidget {
     }
     await Permission.phone.request().isGranted; //ca.request().isGranted
     print(status);
-    // bool res = await FlutterPhoneDirectCaller.callNumber("+993${phoneNumber}");
-    // await FlutterPhoneDirectCaller.callNumber("+993$phoneNumber");
+    bool res = await FlutterPhoneDirectCaller.callNumber("+993${phoneNumber}");
+    await FlutterPhoneDirectCaller.callNumber("+993$phoneNumber");
   }
 
   final ProfilePageController profilePageController = Get.put(ProfilePageController());

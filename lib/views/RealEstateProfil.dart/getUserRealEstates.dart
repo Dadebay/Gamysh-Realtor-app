@@ -35,7 +35,7 @@ class _GetAllRealEstatesState extends State<GetAllRealEstates> {
 
   void _onRefresh() {
     _refreshController.refreshCompleted();
-    getUserOtherRealEstatesController.refresh();
+    getUserOtherRealEstatesController.refreshPage();
   }
 
   void _onLoading() {

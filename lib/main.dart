@@ -46,7 +46,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         channelDescription: channel.description,
         color: Colors.white,
         styleInformation: BigTextStyleInformation(''),
-        icon: '@mipmap/launcher_icon',
+        icon: '@mipmap/ic_launcher',
       ),
     ),
   );
@@ -116,7 +116,7 @@ class _MyAppRunState extends State<MyAppRun> {
             channelDescription: channel.description,
             styleInformation: BigTextStyleInformation(''),
             color: Colors.white,
-            icon: '@mipmap/launcher_icon',
+            icon: '@mipmap/ic_launcher',
           ),
         ),
       );

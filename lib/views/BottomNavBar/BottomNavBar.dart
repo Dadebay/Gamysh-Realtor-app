@@ -7,6 +7,7 @@ import 'package:gamys/constants/constants.dart';
 import 'package:gamys/constants/widgets.dart';
 import 'package:gamys/controllers/BottomNavBarController.dart';
 import 'package:gamys/models/UserModels/AuthModel.dart';
+import 'package:gamys/views/Auth/SignInPage.dart';
 import 'package:gamys/views/HomePage/HomePage.dart';
 import 'package:gamys/views/LastAddedRealEStatesPage/LastAddedRealEstates.dart';
 import 'package:gamys/views/ProfilePage/ProfilePage.dart';
@@ -37,7 +38,12 @@ class BottomNavBar extends GetView<BottomNavBarController> {
             onTap: (index) async {
               final token = await Auth().getToken();
               if (index == 2) {
-                token == null ? showSnackBar("login1".tr, "loginError".tr, kPrimaryColor) : emlakGosmak2();
+                if (token == null) {
+                  showSnackBar("login1".tr, "loginError".tr, kPrimaryColor);
+                  Get.to(() => SignInPage());
+                } else {
+                  emlakGosmak2();
+                }
               } else {
                 bottomNavBarController.selectedIndex(index);
               }

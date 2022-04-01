@@ -25,6 +25,8 @@ class FilterController extends GetxController {
   RxList typeIdList2 = [].obs;
   RxList<dynamic> typeIdListaArray = [].obs;
   RxBool showAllFilters = false.obs;
+  RxBool showAllFiltersSnapshot = false.obs;
+  RxBool buttomButtonBool = false.obs;
 
   ///Sort elements\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   RxString sortName = "sortDefault".obs;
@@ -37,7 +39,7 @@ class FilterController extends GetxController {
       "category_id": "$categoryID",
       "type_id": json.encode(typeID),
       "main_type_id": "$mainTypeId",
-      "owner_id": "$realtorID",
+      "owner_id": realtorID == 3 ? "" : "$realtorID",
       "price": price,
       "area": area,
       "location_id": "$locationID",

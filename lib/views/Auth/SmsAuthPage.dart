@@ -131,7 +131,7 @@ class SmsAuth extends StatelessWidget {
                                         if (whichPage == 0) {
                                           bottomNavBarController.selectedPageIndex.value = 0;
                                         }
-                                        Get.to(() => whichPage == 0 ? BottomNavBar() : ChangePassword());
+                                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => whichPage == 0 ? BottomNavBar() : ChangePassword()));
                                         Future.delayed(const Duration(milliseconds: 200), () {
                                           authController.signInAnimation.value = false;
                                           codeController.clear();

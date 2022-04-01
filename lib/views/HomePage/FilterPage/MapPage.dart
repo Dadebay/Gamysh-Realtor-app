@@ -193,13 +193,13 @@ class _MapPageState extends State<MapPage> {
                                 },
                                 child: Container(decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.blue), child: const Icon(Icons.circle, color: Colors.white))));
                       })),
-                      // MarkerLayerOptions(markers: [
-                      //   Marker(
-                      //       width: 35.0,
-                      //       height: 35.0,
-                      //       point: latlong.LatLng(currentUserLat, currentUserLong),
-                      //       builder: (ctx) => Container(decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blue), child: Icon(IconlyBold.profile, color: Colors.white))),
-                      // ]),
+                      MarkerLayerOptions(markers: [
+                        Marker(
+                            width: 30.0,
+                            height: 30.0,
+                            point: latlong.LatLng(currentUserLat, currentUserLong),
+                            builder: (ctx) => Container(decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blue), child: Icon(IconlyBold.profile, size: 24, color: Colors.white))),
+                      ]),
                     ],
                   );
                 }

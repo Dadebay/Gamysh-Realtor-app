@@ -83,6 +83,7 @@ class GetMapArray extends ChangeNotifier {
 
   Future<List<GetMapArray>> getRealEstatesPostion({Map<String, dynamic> parametrs}) async {
     final List<GetMapArray> locations = [];
+    print(parametrs);
     final response = await http.get(
       Uri.parse(
         "$authServerUrl/api/${lang ?? "ru"}/get-real-estate-positions",
@@ -91,6 +92,7 @@ class GetMapArray extends ChangeNotifier {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
     );
+    print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"];
       for (final Map product in responseJson) {

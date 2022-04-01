@@ -30,12 +30,12 @@ class UserSignInModel {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{"full_name": fullname, "phone": phoneNumber, "password": password, "email": email, "owner_id": realtor}));
-
+    print(response.body);
     if (response.statusCode == 200) {
       Auth().setToken(jsonDecode(response.body)["access_token"] as String);
-      return true;
-    } else if (response.statusCode == 409) {
-      return "409";
+      return response.statusCode;
+    } else {
+      return response.statusCode;
     }
   }
 
@@ -71,6 +71,7 @@ class UserSignInModel {
           "phone": phone,
           "password": password,
         }));
+    print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["access_token"];
       final userIdData = jsonDecode(response.body)["data"];
@@ -78,13 +79,13 @@ class UserSignInModel {
       if (responseJson == null) {
         Auth().setToken(jsonDecode(response.body)["token"] as String);
         Auth().setRefreshToken(jsonDecode(response.body)["refresh_token"] as String);
-        return "home";
+        return response.statusCode;
       } else {
         Auth().setToken(jsonDecode(response.body)["access_token"] as String);
         return "smsgit";
       }
     } else {
-      return "error";
+      return response.statusCode;
     }
   }
 
